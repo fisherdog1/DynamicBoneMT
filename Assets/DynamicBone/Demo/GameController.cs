@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEditor;
 
 public class GameController : MonoBehaviour
 {
@@ -26,4 +27,28 @@ public class GameController : MonoBehaviour
         db[0].enabled = db[1].enabled = GUI.Toggle(new Rect(50, 120, 100, 20), db[0].enabled, "Breasts");
         db[2].enabled = GUI.Toggle(new Rect(50, 140, 100, 20), db[2].enabled, "Tail");
     }
+
+
+    [MenuItem("Test/GetMatrix")]
+    public static void GetMatrix() {
+        GameObject selectObj = Selection.activeGameObject;
+
+        if (selectObj == null) {
+            return;
+        }
+
+        Transform trans = selectObj.transform;
+        Matrix4x4 matrix = trans.localToWorldMatrix;
+
+        Vector3 right = trans.right;
+        Vector3 rightMatrix = matrix.GetColumn(0);
+
+        Vector3 forward = trans.forward;
+        Vector3 forwardMatrix = matrix.GetColumn(2);
+
+        Vector3 up = trans.up;
+        Vector3 upMatrix = matrix.GetColumn(1);
+
+    }
 }
+

@@ -45,7 +45,7 @@ public class DynamicBone : MonoBehaviour
     float m_Weight = 1.0f;
     bool m_DistantDisabled = false;
 
-    class Particle
+    public class Particle
     {
         public Transform m_Transform = null;
         public int m_ParentIndex = -1;
@@ -63,18 +63,27 @@ public class DynamicBone : MonoBehaviour
         public Quaternion m_InitLocalRotation = Quaternion.identity;
     }
 
-    List<Particle> m_Particles = new List<Particle>();
+    public List<Particle> m_Particles = new List<Particle>();
 
     void Start()
     {
         SetupParticles();
         m_DistantDisable = true;
+
+        if (DynamicBoneMTMgr.Instance().bMultiThread == true) {
+            DynamicBoneMTMgr.Instance().SetUpDynamicBone(this);
+        }
     }
 
     void Update()
     {
-        if (m_Weight > 0 && !(m_DistantDisable && m_DistantDisabled))
+        if (m_Weight > 0 && !(m_DistantDisable && m_DistantDisabled)) {
             InitTransforms();
+        }
+
+        if (DynamicBoneMTMgr.Instance().bMultiThread) {
+            DynamicBoneMTMgr.Instance().InitBoneTransform(this);
+        }
     }
 
     void LateUpdate()
