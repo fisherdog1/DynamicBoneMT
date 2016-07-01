@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 public class GameController : MonoBehaviour
 {
@@ -29,6 +32,7 @@ public class GameController : MonoBehaviour
     }
 
 
+#if UNITY_EDITOR
     [MenuItem("Test/GetMatrix")]
     public static void GetMatrix() {
         GameObject selectObj = Selection.activeGameObject;
@@ -50,5 +54,7 @@ public class GameController : MonoBehaviour
         Vector3 upMatrix = matrix.GetColumn(1);
 
     }
+#endif
+
 }
 

@@ -79,7 +79,7 @@ public class DynamicBoneMT {
     float m_Weight = 1.0f;
     bool m_DistantDisabled = false;
 
-    class Particle {
+    public class Particle {
         /// <summary>
         /// discard
         /// </summary>
@@ -133,7 +133,7 @@ public class DynamicBoneMT {
         }
     }
 
-    private List<Particle> m_Particles = new List<Particle>();
+    public List<Particle> m_Particles = new List<Particle>();
 
     public DynamicBoneMT(DynamicBone bone) {
         this.m_selfPosition = bone.transform.position;
@@ -281,7 +281,11 @@ public class DynamicBoneMT {
                 }
             }
             
-            // collide
+
+            ///////////////////////////////////////////////////////////////////////
+            // todo 
+            ///////////////////////////////////////////////////////////////////////
+            // collide  
             /*
             if (m_Colliders != null) {
                 float particleRadius = p.m_Radius * m_ObjectScale;
@@ -382,7 +386,7 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
         thread.Start();
     }
 
-    //private List<DynamicBoneMT> lstDynamicBone = new List<DynamicBoneMT>();
+
     private Dictionary<int, DynamicBoneMT> dictID2Bone = new Dictionary<int, DynamicBoneMT>();
 
     private List<int> lstToCalculateID = new List<int>();
@@ -407,10 +411,42 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
         }
 
         if (IsLastFrameDone()) {
+            // set current frame data to boneMT
+            
             lock (objLock) {
                 if (!lstToCalculateID.Contains(nID)) {
                     boneMT.InitTransform(bone);
                     lstToCalculateID.Add(nID);
+                }
+            }
+
+            // get last frame data and apply to transform
+            if (m_nCurFrame != 0) {
+                for (int i = 1; i < boneMT.m_Particles.Count; ++i) {
+                    DynamicBone.Particle p = bone.m_Particles[i];
+                    DynamicBone.Particle p0 = bone.m_Particles[p.m_ParentIndex];
+
+                    DynamicBoneMT.Particle pMT = boneMT.m_Particles[i];
+                    DynamicBoneMT.Particle p0MT = boneMT.m_Particles[pMT.m_ParentIndex];
+
+                    if (p0.m_Transform.childCount <= 1) {
+                        Vector3 v;
+                        if (!pMT.m_bTransIsNull) {
+                            v = pMT.m_transLocalPosition;
+                        }
+                        else {
+                            v = pMT.m_EndOffset;
+                        }
+
+                        //Quaternion rot = Quaternion.FromToRotation(p0MT.m_transLocal2World * v, pMT.m_Position - p0MT.m_Position);
+                        Quaternion rot = Quaternion.FromToRotation(p0.m_Transform.TransformDirection(v), pMT.m_Position - p0MT.m_Position);
+
+                        p0.m_Transform.rotation = rot * p0.m_Transform.rotation;
+                    }
+
+                    if (p.m_Transform != null) {
+                        p.m_Transform.position = pMT.m_Position;
+                    }
                 }
             }
 

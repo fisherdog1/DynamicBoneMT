@@ -82,17 +82,22 @@ public class DynamicBone : MonoBehaviour
         }
 
         if (DynamicBoneMTMgr.Instance().bMultiThread) {
+            
             DynamicBoneMTMgr.Instance().InitBoneTransform(this);
+
+            DynamicBoneMTMgr.Instance().Update(Time.deltaTime);
         }
     }
 
     void LateUpdate()
     {
+        /*
         if (m_DistantDisable)
             CheckDistance();
 
         if (m_Weight > 0 && !(m_DistantDisable && m_DistantDisabled))
             UpdateDynamicBones(Time.deltaTime);
+         * */
     }
 
     void CheckDistance()
