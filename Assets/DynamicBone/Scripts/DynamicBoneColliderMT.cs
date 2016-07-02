@@ -1,10 +1,35 @@
 ﻿using UnityEngine;
 
-[AddComponentMenu("Dynamic Bone/Dynamic Bone Collider")]
-public class DynamicBoneCollider : MonoBehaviour {
+public class DynamicBoneColliderMT {
+    public TransformMT transform;
+    public bool enabled;
+
     public Vector3 m_Center = Vector3.zero;
     public float m_Radius = 0.5f;
     public float m_Height = 0;
+
+    public DynamicBoneColliderMT(DynamicBoneCollider collider) {
+        this.transform = new TransformMT(collider.transform);
+
+        this.enabled = collider.enabled;
+        this.m_Center = collider.m_Center;
+        this.m_Radius = collider.m_Radius;
+        this.m_Height = collider.m_Height;
+
+        this.m_Direction = (Direction)collider.m_Direction;
+        this.m_Bound = (Bound)collider.m_Bound;
+    }
+
+    public void InitColliderTransform(DynamicBoneCollider collider) {
+        if (transform == null) {
+            transform = new TransformMT(collider.transform);
+        }
+        else {
+            transform.InitTransform(collider.transform);
+        }
+
+        this.enabled = collider.enabled;
+    }
 
     public enum Direction {
         X, Y, Z
@@ -157,42 +182,6 @@ public class DynamicBoneCollider : MonoBehaviour {
                     particlePosition += d * ((r - len) / len);
                 }
             }
-        }
-    }
-
-    void OnDrawGizmosSelected() {
-        if (!enabled)
-            return;
-
-        if (m_Bound == Bound.Outside)
-            Gizmos.color = Color.yellow;
-        else
-            Gizmos.color = Color.magenta;
-        float radius = m_Radius * Mathf.Abs(transform.lossyScale.x);
-        float h = m_Height * 0.5f - m_Radius;
-        if (h <= 0) {
-            Gizmos.DrawWireSphere(transform.TransformPoint(m_Center), radius);
-        }
-        else {
-            Vector3 c0 = m_Center;
-            Vector3 c1 = m_Center;
-
-            switch (m_Direction) {
-                case Direction.X:
-                    c0.x -= h;
-                    c1.x += h;
-                    break;
-                case Direction.Y:
-                    c0.y -= h;
-                    c1.y += h;
-                    break;
-                case Direction.Z:
-                    c0.z -= h;
-                    c1.z += h;
-                    break;
-            }
-            Gizmos.DrawWireSphere(transform.TransformPoint(c0), radius);
-            Gizmos.DrawWireSphere(transform.TransformPoint(c1), radius);
         }
     }
 }

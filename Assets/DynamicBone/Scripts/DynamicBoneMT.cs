@@ -44,7 +44,7 @@ public class DynamicBoneMT {
     /// <summary>
     /// discard
     /// </summary>
-    //public List<DynamicBoneCollider> m_Colliders = null;  
+    public List<DynamicBoneColliderMT> m_Colliders = null;  
 
     /// <summary>
     /// discard
@@ -118,14 +118,20 @@ public class DynamicBoneMT {
     public List<Particle> m_Particles = new List<Particle>();
 
     public DynamicBoneMT(DynamicBone bone) {
-        /*
-        this.m_selfPosition = bone.transform.position;
-        this.m_selfScale = bone.transform.lossyScale;
-        this.m_selfRotation = bone.transform.rotation;
-        */
+        //component self
         this.transform = new TransformMT(bone.transform);
+
+        //m_root
         this.m_Root = new TransformMT(bone.m_Root);
 
+        //m_collider
+        if (bone.m_Colliders != null) {
+            this.m_Colliders = new List<DynamicBoneColliderMT>(bone.m_Colliders.Count);
+            for (int i = 0; i < bone.m_Colliders.Count; ++i) {
+                this.m_Colliders.Add(new DynamicBoneColliderMT(bone.m_Colliders[i]));
+            }
+        }
+        
         this.m_UpdateRate = bone.m_UpdateRate;
         this.m_Elasticity = bone.m_Elasticity;
         this.m_Stiffness = bone.m_Stiffness;
@@ -153,6 +159,13 @@ public class DynamicBoneMT {
 
         // m_root
         this.m_Root.InitTransform(bone.m_Root);
+
+        // collider
+        if (bone.m_Colliders != null) {
+            for (int i = 0; i < m_Colliders.Count; ++i) {
+                m_Colliders[i].InitColliderTransform(bone.m_Colliders[i]);
+            }
+        }
 
         for (int i = 0; i < m_Particles.Count; ++i) {
             trans = bone.m_Particles[i].m_Transform;
@@ -263,16 +276,16 @@ public class DynamicBoneMT {
             // todo 
             ///////////////////////////////////////////////////////////////////////
             // collide  
-            /*
+            
             if (m_Colliders != null) {
                 float particleRadius = p.m_Radius * m_ObjectScale;
                 for (int j = 0; j < m_Colliders.Count; ++j) {
-                    DynamicBoneCollider c = m_Colliders[j];
+                    DynamicBoneColliderMT c = m_Colliders[j];
                     if (c != null && c.enabled)
                         c.Collide(ref p.m_Position, particleRadius);
                 }
             }
-            */
+            
 
             // freeze axis, project to plane 
             if (m_FreezeAxis != FreezeAxis.None) {

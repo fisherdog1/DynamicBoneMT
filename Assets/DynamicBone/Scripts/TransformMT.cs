@@ -15,8 +15,8 @@ public class TransformMT {
     public Vector3 right;
     public Vector3 up;
     public Vector3 forward;
-
     public int childCount;
+
     // discard default construction
     private TransformMT() {
 
@@ -51,4 +51,7 @@ public class TransformMT {
         return localToWorldMatrix * direction;
     }
 
+    public Vector3 TransformPoint(Vector3 v) {
+        return localToWorldMatrix.MultiplyPoint(v);
+    }
 }

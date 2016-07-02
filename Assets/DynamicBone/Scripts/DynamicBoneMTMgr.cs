@@ -18,7 +18,6 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
         thread.Start();
     }
 
-
     private Dictionary<int, DynamicBoneMT> dictID2Bone = new Dictionary<int, DynamicBoneMT>();
 
     private List<int> lstToCalculateID = new List<int>();
@@ -53,8 +52,8 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
         }
 
         if (IsLastFrameDone()) {
+
             // set current frame data to boneMT
-            
             lock (objLock) {
                 if (!lstToCalculateID.Contains(nID)) {
                     boneMT.InitTransform(bone);
@@ -80,7 +79,6 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
                             v = pMT.m_EndOffset;
                         }
 
-                        //Quaternion rot = Quaternion.FromToRotation(p0MT.m_transLocal2World * v, pMT.m_Position - p0MT.m_Position);
                         Quaternion rot = Quaternion.FromToRotation(p0.m_Transform.TransformDirection(v), pMT.m_Position - p0MT.m_Position);
 
                         p0.m_Transform.rotation = rot * p0.m_Transform.rotation;
