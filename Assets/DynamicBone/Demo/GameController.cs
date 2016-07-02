@@ -29,6 +29,8 @@ public class GameController : MonoBehaviour
         GUI.Label(new Rect(50, 100, 200, 20), "Choose dynamic bone:");
         db[0].enabled = db[1].enabled = GUI.Toggle(new Rect(50, 120, 100, 20), db[0].enabled, "Breasts");
         db[2].enabled = GUI.Toggle(new Rect(50, 140, 100, 20), db[2].enabled, "Tail");
+
+        DynamicBoneMTMgr.Instance().bMultiThread = GUI.Toggle(new Rect(50, 160, 100, 20), DynamicBoneMTMgr.Instance().bMultiThread, "MultiThread");
     }
 
 
