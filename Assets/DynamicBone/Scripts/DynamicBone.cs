@@ -120,12 +120,19 @@ public class DynamicBone : MonoBehaviour
 
     void OnEnable()
     {
+        if (DynamicBoneMTMgr.Instance().bMultiThread == true) {
+            DynamicBoneMTMgr.Instance().SetUpDynamicBone(this);
+        }
+
         ResetParticlesPosition();
     }
+
 
     void OnDisable()
     {
         InitTransforms();
+
+        DynamicBoneMTMgr.Instance().DeleteDynamicBone(this);
     }
 
     void OnValidate()
