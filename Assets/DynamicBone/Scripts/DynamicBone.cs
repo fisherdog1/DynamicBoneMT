@@ -70,13 +70,10 @@ public class DynamicBone : MonoBehaviour
         SetupParticles();
         m_DistantDisable = true;
 
-        if (DynamicBoneMTMgr.Instance().bMultiThread == true) {
-            DynamicBoneMTMgr.Instance().SetUpDynamicBone(this);
-        }
+        DynamicBoneMTMgr.Instance().SetUpDynamicBone(this);
     }
 
-    void Update()
-    {
+    void Update() {
         if (m_Weight > 0 && !(m_DistantDisable && m_DistantDisabled)) {
             InitTransforms();
         }
@@ -118,10 +115,7 @@ public class DynamicBone : MonoBehaviour
 
     void OnEnable()
     {
-        if (DynamicBoneMTMgr.Instance().bMultiThread == true) {
-            DynamicBoneMTMgr.Instance().SetUpDynamicBone(this);
-        }
-
+        DynamicBoneMTMgr.Instance().SetUpDynamicBone(this);
         ResetParticlesPosition();
     }
 
@@ -129,10 +123,7 @@ public class DynamicBone : MonoBehaviour
     void OnDisable()
     {
         InitTransforms();
-
-        if (DynamicBoneMTMgr.Instance().bMultiThread) {
-            DynamicBoneMTMgr.Instance().DeleteDynamicBone(this);
-        }
+        DynamicBoneMTMgr.Instance().DeleteDynamicBone(this);
     }
 
     void OnValidate()

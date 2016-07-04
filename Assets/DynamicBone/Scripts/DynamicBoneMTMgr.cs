@@ -52,7 +52,6 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
         }
 
         if (IsLastFrameDone()) {
-
             // set current frame data to boneMT
             lock (objLock) {
                 if (!lstToCalculateID.Contains(nID)) {
@@ -61,33 +60,8 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
                 }
             }
 
-            // get last frame data and apply to transform
             if (m_nCurFrame != 0) {
-                for (int i = 1; i < boneMT.m_Particles.Count; ++i) {
-                    DynamicBone.Particle p = bone.m_Particles[i];
-                    DynamicBone.Particle p0 = bone.m_Particles[p.m_ParentIndex];
-
-                    DynamicBoneMT.Particle pMT = boneMT.m_Particles[i];
-                    DynamicBoneMT.Particle p0MT = boneMT.m_Particles[pMT.m_ParentIndex];
-
-                    if (p0.m_Transform.childCount <= 1) {
-                        Vector3 v;
-                        if (pMT.m_Transform != null) {
-                            v = pMT.m_InitLocalPosition;
-                        }
-                        else {
-                            v = pMT.m_EndOffset;
-                        }
-
-                        Quaternion rot = Quaternion.FromToRotation(p0.m_Transform.TransformDirection(v), pMT.m_Position - p0MT.m_Position);
-
-                        p0.m_Transform.rotation = rot * p0.m_Transform.rotation;
-                    }
-
-                    if (p.m_Transform != null) {
-                        p.m_Transform.position = pMT.m_Position;
-                    }
-                }
+                boneMT.ApplyParticlesToTransforms(bone);
             }
 
             //通知线程开始计算
@@ -101,9 +75,6 @@ public class DynamicBoneMTMgr : Singleton<DynamicBoneMTMgr> {
         fDeltaTime = fTime;
     }
 
-    public void LateUpdate() {
-
-    }
 
     private int m_nCurFrame = 0;
     private int m_nLastFrame = 0;
